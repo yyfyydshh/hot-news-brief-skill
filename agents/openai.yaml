@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hot News Brief"
+  short_description: "Evidence-linked seven-day news briefs for business topics."
+  default_prompt: "Use $hot-news-brief to summarize the latest business news on a topic."

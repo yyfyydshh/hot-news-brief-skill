@@ -1,0 +1,6 @@
+# Local connector configuration and credentials
+.mcp.json
+mcp.json
+.env
+.env.*
+!.env.example
