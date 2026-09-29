@@ -34,8 +34,9 @@ function collectPages(value, output, depth = 0) {
   }
   if (typeof value !== "object") return;
   if (Array.isArray(value.webPages?.value)) output.push(...value.webPages.value);
+  if (Array.isArray(value.records)) output.push(...value.records);
   for (const [key, child] of Object.entries(value)) {
-    if (key !== "webPages") collectPages(child, output, depth + 1);
+    if (key !== "webPages" && key !== "records") collectPages(child, output, depth + 1);
   }
 }
 
@@ -78,8 +79,8 @@ function relevance(topic, page) {
 
 function compactPage(page, topic, now) {
   const title = compactText(page?.name ?? page?.title, 180);
-  const url = normalizedUrl(page?.url);
-  const published = new Date(page?.datePublished ?? "");
+  const url = normalizedUrl(page?.source_url ?? page?.original_url ?? page?.url);
+  const published = new Date(page?.datePublished ?? page?.date_published ?? "");
   if (!title || !url || Number.isNaN(published.getTime())) return null;
   const age = now.getTime() - published.getTime();
   if (age < 0 || age > 7 * 24 * 60 * 60 * 1000) return null;
@@ -89,7 +90,7 @@ function compactPage(page, topic, now) {
     title,
     url,
     domain: parsed.hostname.toLowerCase().replace(/^www\./u, ""),
-    source: compactText(page?.siteName ?? page?.source ?? parsed.hostname, 80),
+    source: compactText(page?.siteName ?? page?.source ?? page?.source_name ?? parsed.hostname, 80),
     datePublished: published.toISOString(),
     snippet,
   };
